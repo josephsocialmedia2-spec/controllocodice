@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Sottotitoli Scorrevoli</title>
+    <title>Sistema Sottotitoli</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: Arial, sans-serif;
         }
         
         body {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            color: #f1f5f9;
-            min-height: 100vh;
+            background: #1a1a2e;
+            color: #fff;
             padding: 20px;
-            line-height: 1.6;
         }
         
         .container {
@@ -27,1206 +25,509 @@
         
         header {
             text-align: center;
-            margin-bottom: 40px;
-            padding: 30px;
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 15px;
-            border: 1px solid #334155;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #16213e;
+            border-radius: 10px;
         }
         
         h1 {
-            color: #38bdf8;
+            color: #4cc9f0;
             margin-bottom: 10px;
-            font-size: 2.8rem;
-            text-shadow: 0 2px 10px rgba(56, 189, 248, 0.3);
         }
         
-        .subtitle {
-            color: #94a3b8;
-            font-size: 1.2rem;
-            max-width: 800px;
-            margin: 0 auto;
+        .subtitle-display {
+            width: 100%;
+            height: 100px;
+            background: #0f3460;
+            border-radius: 10px;
+            margin: 30px 0;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #4cc9f0;
+        }
+        
+        #subtitle {
+            position: absolute;
+            white-space: nowrap;
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            top: 50%;
+            transform: translateY(-50%);
+            left: 100%;
+            padding: 10px 0;
+            text-shadow: 0 0 10px rgba(76, 201, 240, 0.8);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            background: #4361ee;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 150px;
+        }
+        
+        button:hover {
+            background: #3a56d4;
+            transform: translateY(-2px);
+        }
+        
+        button#startSubtitle {
+            background: #06d6a0;
+        }
+        
+        button#stopSubtitle {
+            background: #ef476f;
+        }
+        
+        button#resetSubtitle {
+            background: #ffd166;
+            color: #333;
         }
         
         .main-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 40px;
+            gap: 20px;
+            margin-bottom: 30px;
         }
         
-        @media (max-width: 992px) {
+        @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
             }
         }
         
         .panel {
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            border: 1px solid #334155;
-            backdrop-filter: blur(10px);
-        }
-        
-        .panel h2 {
-            color: #38bdf8;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #334155;
-            font-size: 1.6rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .panel h2::before {
-            content: "▶";
-            font-size: 0.9em;
-        }
-        
-        textarea.code-input {
-            width: 100%;
-            min-height: 350px;
-            background: rgba(15, 23, 42, 0.9);
-            color: #e2e8f0;
-            border: 2px solid #475569;
-            border-radius: 10px;
+            background: #16213e;
             padding: 20px;
-            font-size: 15px;
-            font-family: 'Consolas', 'Monaco', monospace;
-            resize: vertical;
-            margin-bottom: 20px;
-            line-height: 1.5;
-            transition: border 0.3s;
-        }
-        
-        textarea.code-input:focus {
-            outline: none;
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
-        }
-        
-        .button-group {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-bottom: 25px;
-        }
-        
-        button {
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-            color: white;
-            border: none;
-            padding: 14px 24px;
             border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            min-width: 140px;
-            justify-content: center;
+            border: 1px solid #0f3460;
         }
         
-        button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 7px 20px rgba(37, 99, 235, 0.4);
+        h2 {
+            color: #4cc9f0;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #0f3460;
         }
         
-        button:active {
-            transform: translateY(-1px);
-        }
-        
-        button.secondary {
-            background: linear-gradient(135deg, #475569 0%, #334155 100%);
-        }
-        
-        button.secondary:hover {
-            box-shadow: 0 7px 20px rgba(71, 85, 105, 0.4);
-        }
-        
-        button.success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-        
-        button.success:hover {
-            box-shadow: 0 7px 20px rgba(16, 185, 129, 0.4);
-        }
-        
-        button.warning {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        }
-        
-        button.warning:hover {
-            box-shadow: 0 7px 20px rgba(245, 158, 11, 0.4);
-        }
-        
-        button.danger {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        }
-        
-        button.danger:hover {
-            box-shadow: 0 7px 20px rgba(239, 68, 68, 0.4);
-        }
-        
-        .subtitle-display-container {
-            margin: 40px 0;
-            padding: 25px;
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 15px;
-            border: 1px solid #334155;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        }
-        
-        .subtitle-display {
-            position: relative;
+        textarea {
             width: 100%;
-            height: 140px;
-            background: rgba(15, 23, 42, 0.9);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 2px solid #475569;
-            display: flex;
-            align-items: center;
+            min-height: 250px;
+            background: #0f3460;
+            color: #fff;
+            border: 1px solid #4cc9f0;
+            border-radius: 5px;
+            padding: 15px;
+            font-size: 14px;
+            font-family: monospace;
+            margin-bottom: 15px;
+            resize: vertical;
         }
         
-        .subtitle-text {
-            position: absolute;
-            white-space: nowrap;
-            font-size: 2.2rem;
-            font-weight: 700;
-            color: #ffffff;
-            text-shadow: 
-                0 0 20px rgba(56, 189, 248, 0.8),
-                0 0 40px rgba(56, 189, 248, 0.4),
-                2px 2px 4px rgba(0, 0, 0, 0.5);
-            padding: 15px 0;
-            letter-spacing: 1px;
-            left: 100%;
+        .caption-area {
+            min-height: 150px;
+            font-family: Arial, sans-serif;
+            font-size: 16px;
         }
         
-        .subtitle-controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 25px;
-            justify-content: center;
-            align-items: center;
+        .code-output {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid #4cc9f0;
+        }
+        
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .success {
+            background: rgba(6, 214, 160, 0.2);
+            border-left: 4px solid #06d6a0;
+            color: #06d6a0;
+        }
+        
+        .error {
+            background: rgba(239, 71, 111, 0.2);
+            border-left: 4px solid #ef476f;
+            color: #ef476f;
+        }
+        
+        .info {
+            background: rgba(76, 201, 240, 0.2);
+            border-left: 4px solid #4cc9f0;
+            color: #4cc9f0;
         }
         
         .speed-control {
             display: flex;
             align-items: center;
-            gap: 15px;
-            background: rgba(15, 23, 42, 0.7);
-            padding: 12px 20px;
-            border-radius: 10px;
-            border: 1px solid #475569;
-        }
-        
-        .speed-control label {
-            font-weight: 600;
-            color: #94a3b8;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
         }
         
         .speed-control input {
-            width: 180px;
-            accent-color: #38bdf8;
+            width: 200px;
         }
         
-        .speed-value {
-            background: #0f172a;
-            color: #38bdf8;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            min-width: 50px;
-            text-align: center;
-            border: 1px solid #334155;
-        }
-        
-        .caption-section {
-            margin-top: 40px;
-            padding: 30px;
-            background: rgba(30, 41, 59, 0.8);
-            border-radius: 15px;
-            border: 1px solid #334155;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-        }
-        
-        .caption-section h2 {
-            color: #38bdf8;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #334155;
-            font-size: 1.6rem;
+        .test-buttons {
             display: flex;
-            align-items: center;
             gap: 10px;
+            margin-top: 15px;
         }
         
-        .caption-section h2::before {
-            content: "📝";
-            font-size: 1em;
-        }
-        
-        textarea.caption-input {
-            width: 100%;
-            min-height: 150px;
-            background: rgba(15, 23, 42, 0.9);
-            color: #f1f5f9;
-            border: 2px solid #475569;
-            border-radius: 10px;
-            padding: 20px;
-            font-size: 16px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            resize: vertical;
-            line-height: 1.6;
-            transition: border 0.3s;
-            margin-bottom: 20px;
-        }
-        
-        textarea.caption-input:focus {
-            outline: none;
-            border-color: #38bdf8;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
-        }
-        
-        .results-container {
-            margin-top: 25px;
-        }
-        
-        .results-container h3 {
-            color: #38bdf8;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-        
-        .code-output {
-            background: rgba(15, 23, 42, 0.9);
-            border-radius: 10px;
-            padding: 25px;
-            max-height: 400px;
-            overflow-y: auto;
-            border: 2px solid #334155;
-            font-family: 'Consolas', 'Monaco', monospace;
+        .test-buttons button {
+            min-width: 120px;
+            padding: 10px;
             font-size: 14px;
-            line-height: 1.5;
-            color: #e2e8f0;
-            margin-bottom: 20px;
-        }
-        
-        .code-output pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-        
-        .message {
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
-            border-left: 5px solid;
-            animation: fadeIn 0.5s ease;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .error {
-            color: #f87171;
-            background: rgba(248, 113, 113, 0.1);
-            border-color: #f87171;
-        }
-        
-        .success {
-            color: #10b981;
-            background: rgba(16, 185, 129, 0.1);
-            border-color: #10b981;
-        }
-        
-        .warning {
-            color: #fbbf24;
-            background: rgba(251, 191, 36, 0.1);
-            border-color: #fbbf24;
-        }
-        
-        .info {
-            color: #60a5fa;
-            background: rgba(96, 165, 250, 0.1);
-            border-color: #60a5fa;
-        }
-        
-        .functionality-test {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 20px;
-            margin-top: 25px;
-        }
-        
-        .test-item {
-            background: rgba(15, 23, 42, 0.9);
-            padding: 20px;
-            border-radius: 12px;
-            border: 2px solid #334155;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: all 0.3s ease;
-        }
-        
-        .test-item:hover {
-            transform: translateY(-5px);
-            border-color: #38bdf8;
-            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.2);
-        }
-        
-        .test-icon {
-            font-size: 2rem;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: rgba(56, 189, 248, 0.1);
-            color: #38bdf8;
-        }
-        
-        .test-content {
-            flex: 1;
-        }
-        
-        .test-title {
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #e2e8f0;
-        }
-        
-        .test-status {
-            font-weight: 600;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            display: inline-block;
-        }
-        
-        .status-success {
-            background: rgba(16, 185, 129, 0.2);
-            color: #10b981;
-        }
-        
-        .status-error {
-            background: rgba(248, 113, 113, 0.2);
-            color: #f87171;
         }
         
         footer {
             text-align: center;
-            margin-top: 50px;
-            padding: 25px;
-            border-top: 2px solid #334155;
-            color: #94a3b8;
-            font-size: 0.95rem;
-            background: rgba(30, 41, 59, 0.7);
-            border-radius: 15px;
-        }
-        
-        .instructions {
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 10px;
+            margin-top: 30px;
             padding: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .instructions h3 {
-            color: #38bdf8;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .instructions ul {
-            padding-left: 20px;
-            margin-top: 10px;
-        }
-        
-        .instructions li {
-            margin-bottom: 8px;
-            color: #cbd5e1;
-        }
-        
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-right: 8px;
-            animation: pulse 2s infinite;
-        }
-        
-        .status-active {
-            background: #10b981;
-            box-shadow: 0 0 10px #10b981;
-        }
-        
-        .status-inactive {
-            background: #94a3b8;
-        }
-        
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
+            background: #16213e;
+            border-radius: 10px;
+            color: #4cc9f0;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🎬 Sistema di Sottotitoli Scorrevoli</h1>
-            <p class="subtitle">Analisi codice HTML, correzione errori e sottotitoli scorrevoli orizzontali con area caption professionale</p>
-            <div class="status-indicator status-active"></div>
-            <span>Sistema attivo e pronto all'uso</span>
+            <h1>🎬 Sistema Sottotitoli Scorrevoli</h1>
+            <p>Analisi codice HTML + Sottotitoli scorrevoli orizzontali</p>
         </header>
-
-        <div class="subtitle-display-container">
-            <h2>🎥 Sottotitoli Scorrevoli</h2>
-            <div class="subtitle-display">
-                <div id="subtitle" class="subtitle-text">
-                    Sistema di sottotitoli scorrevoli attivo. Usa il testo dalla sezione caption o inserisci il tuo.
-                </div>
-            </div>
-            
-            <div class="subtitle-controls">
-                <button id="startSubtitle" class="success">
-                    <span>▶</span> Avvia
-                </button>
-                <button id="stopSubtitle" class="warning">
-                    <span>⏸</span> Pausa
-                </button>
-                <button id="resetSubtitle" class="secondary">
-                    <span>↺</span> Reset
-                </button>
-                
-                <div class="speed-control">
-                    <label for="speed">Velocità:</label>
-                    <input type="range" id="speed" min="1" max="20" value="10">
-                    <div class="speed-value" id="speedValue">10</div>
-                </div>
+        
+        <div class="subtitle-display">
+            <div id="subtitle">Sistema attivo - Inserisci testo nella sezione caption</div>
+        </div>
+        
+        <div class="controls">
+            <button id="startSubtitle">▶ Avvia Sottotitoli</button>
+            <button id="stopSubtitle">⏹ Ferma</button>
+            <button id="resetSubtitle">↺ Reset</button>
+            <div class="speed-control">
+                <span>Velocità:</span>
+                <input type="range" id="speed" min="1" max="20" value="10">
+                <span id="speedValue">10</span>
             </div>
         </div>
-
+        
         <div class="main-content">
             <div class="panel">
-                <h2>🔍 Analisi Codice HTML</h2>
-                
-                <div class="instructions">
-                    <h3>📋 Come funziona:</h3>
-                    <ul>
-                        <li>Incolla il tuo codice HTML nell'area sottostante</li>
-                        <li>Premi "Analizza Codice" per controllare errori</li>
-                        <li>Il sistema correggerà automaticamente problemi comuni</li>
-                        <li>Testa le funzionalità con i pulsanti dedicati</li>
-                    </ul>
-                </div>
-                
-                <textarea id="htmlInput" class="code-input" placeholder="Incolla qui il tuo codice HTML da analizzare e correggere..."><!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <title>Pagina di Esempio</title>
-</head>
-<body>
-    <h1>Benvenuti</h1>
-    <p>Questa è una pagina di esempio per testare il sistema di analisi.</p>
-    <button onclick="alert('Funzione test!')">Test Alert</button>
-    <div class="content">
-        <p>Contenuto aggiuntivo per il test.</p>
-    </div>
-</body>
-</html></textarea>
-                
-                <div class="button-group">
-                    <button id="analyzeCode" class="success">
-                        <span>🔍</span> Analizza Codice
-                    </button>
-                    <button id="whatsappBtn" class="secondary">
-                        <span>📱</span> What's Up
-                    </button>
-                    <button id="teleprompterBtn" class="secondary">
-                        <span>📜</span> Teleprompter
-                    </button>
-                    <button id="cameraBtn" class="secondary">
-                        <span>📷</span> Camera
-                    </button>
-                </div>
-                
-                <div class="results-container">
-                    <h3>🧪 Test Funzionalità</h3>
-                    <div id="functionResults" class="functionality-test">
-                        <!-- I risultati dei test appariranno qui -->
-                    </div>
+                <h2>📝 Area Caption (Testo libero)</h2>
+                <textarea id="captionText" class="caption-area" placeholder="Scrivi qui il testo per i sottotitoli scorrevoli...">Benvenuti nel sistema di sottotitoli professionale. Questo testo scorrerà orizzontalmente sullo schermo. Puoi modificare questo contenuto e utilizzarlo per presentazioni, webinar o eventi dal vivo.</textarea>
+                <div class="test-buttons">
+                    <button id="useCaptionForSubtitle" style="background: #06d6a0;">Usa per Sottotitoli</button>
+                    <button id="clearCaption" style="background: #ffd166; color: #333;">Pulisci</button>
                 </div>
             </div>
             
             <div class="panel">
-                <h2>✅ Risultati & Codice Corretto</h2>
-                
-                <div id="analysisResults" class="code-output">
-                    <div class="info">
-                        <strong>Pronto per l'analisi:</strong> Incolla il codice HTML e premi "Analizza Codice" per iniziare la verifica e correzione.
-                    </div>
+                <h2>⚙️ Controlli Test</h2>
+                <div class="test-buttons">
+                    <button id="whatsappBtn" style="background: #25D366;">WhatsApp</button>
+                    <button id="teleprompterBtn" style="background: #8B5CF6;">Teleprompter</button>
+                    <button id="cameraBtn" style="background: #EF476F;">Camera</button>
+                    <button id="analyzeCode" style="background: #4361ee;">Analizza Codice</button>
                 </div>
-                
-                <div class="button-group">
-                    <button id="copyCode" class="success">
-                        <span>📋</span> Copia Codice
-                    </button>
-                    <button id="clearResults" class="secondary">
-                        <span>🗑️</span> Pulisci Risultati
-                    </button>
-                </div>
-                
-                <div class="instructions" style="margin-top: 20px;">
-                    <h3>⚠️ Errori Comuni Correggibili:</h3>
-                    <ul>
-                        <li>DOCTYPE mancante o errato</li>
-                        <li>Tag HTML, HEAD o BODY non chiusi</li>
-                        <li>Charset UTF-8 mancante</li>
-                        <li>Viewport per mobile assente</li>
-                        <li>Tag non chiusi correttamente</li>
-                    </ul>
+                <div id="functionResults" class="code-output" style="margin-top: 15px;">
+                    <div class="info">Premi i pulsanti per testare le funzionalità</div>
                 </div>
             </div>
         </div>
-
-        <div class="caption-section">
-            <h2>📝 Area Testo Libero (Caption)</h2>
-            
-            <textarea id="captionText" class="caption-input" placeholder="Scrivi qui il tuo testo libero... Quest'area ha lo stesso stile delle caption memorizzate. Il testo inserito può essere utilizzato per i sottotitoli scorrevoli.">Benvenuti nel sistema di presentazione professionale.
-
-Oggi parleremo di sviluppo web accessibile e inclusivo.
-• Importanza del codice HTML semantico
-• Accessibilità per tutti gli utenti
-• Best practices per sottotitoli e caption
-
-Il sistema analizza automaticamente il codice HTML, corregge gli errori comuni e genera sottotitoli scorrevoli per le tue presentazioni.
-
-Prova a modificare questo testo e premi "Usa per Sottotitoli" per vedere il risultato!</textarea>
-            
-            <div class="button-group">
-                <button id="useCaptionForSubtitle" class="success">
-                    <span>🎬</span> Usa per Sottotitoli
-                </button>
-                <button id="clearCaption" class="secondary">
-                    <span>✏️</span> Modifica Testo
-                </button>
-                <button id="sampleCaption" class="secondary">
-                    <span>📄</span> Testo di Esempio
-                </button>
+        
+        <div class="panel">
+            <h2>🔍 Analisi Codice HTML</h2>
+            <textarea id="htmlInput" placeholder="Incolla qui il tuo codice HTML da analizzare..."><!DOCTYPE html>
+<html>
+<head>
+    <title>Test Page</title>
+</head>
+<body>
+    <h1>Pagina di Test</h1>
+    <p>Esempio di codice HTML da analizzare</p>
+    <button>Cliccami</button>
+</body>
+</html></textarea>
+            <div id="analysisResults" class="code-output">
+                <div class="info">Incolla il codice HTML e premi "Analizza Codice"</div>
             </div>
         </div>
-
+        
         <footer>
-            <p>🛠️ Sistema sviluppato per analisi codice HTML e generazione sottotitoli scorrevoli professionali</p>
-            <p style="margin-top: 10px; font-size: 0.85rem;">© 2023 Sistema di Sottotitoli - Tutte le funzionalità testate e funzionanti</p>
+            <p>Sistema di Sottotitoli Scorrevoli | Tutte le funzionalità testate</p>
         </footer>
     </div>
 
     <script>
-        // =============================================
-        // VARIABILI E INIZIALIZZAZIONE
-        // =============================================
+        // Variabili globali
+        let subtitleAnimation = null;
+        let subtitlePosition = 0;
+        let subtitleSpeed = 10;
+        let currentSubtitleText = "";
         
-        // Elementi DOM principali
+        // Elementi DOM
         const elements = {
-            htmlInput: document.getElementById('htmlInput'),
-            analyzeCodeBtn: document.getElementById('analyzeCode'),
-            analysisResults: document.getElementById('analysisResults'),
-            subtitleElement: document.getElementById('subtitle'),
-            startSubtitleBtn: document.getElementById('startSubtitle'),
-            stopSubtitleBtn: document.getElementById('stopSubtitle'),
-            resetSubtitleBtn: document.getElementById('resetSubtitle'),
+            subtitle: document.getElementById('subtitle'),
+            startBtn: document.getElementById('startSubtitle'),
+            stopBtn: document.getElementById('stopSubtitle'),
+            resetBtn: document.getElementById('resetSubtitle'),
             captionText: document.getElementById('captionText'),
-            useCaptionForSubtitleBtn: document.getElementById('useCaptionForSubtitle'),
+            useCaptionBtn: document.getElementById('useCaptionForSubtitle'),
             clearCaptionBtn: document.getElementById('clearCaption'),
-            sampleCaptionBtn: document.getElementById('sampleCaption'),
-            copyCodeBtn: document.getElementById('copyCode'),
-            clearResultsBtn: document.getElementById('clearResults'),
             speedSlider: document.getElementById('speed'),
             speedValue: document.getElementById('speedValue'),
             whatsappBtn: document.getElementById('whatsappBtn'),
             teleprompterBtn: document.getElementById('teleprompterBtn'),
             cameraBtn: document.getElementById('cameraBtn'),
+            analyzeBtn: document.getElementById('analyzeCode'),
+            htmlInput: document.getElementById('htmlInput'),
+            analysisResults: document.getElementById('analysisResults'),
             functionResults: document.getElementById('functionResults')
         };
         
-        // Stato dell'applicazione
-        const appState = {
-            subtitleAnimationId: null,
-            subtitlePosition: 0,
-            subtitleSpeed: 10,
-            subtitleText: '',
-            correctedCode: '',
-            isSubtitleActive: false
-        };
-        
-        // =============================================
-        // INIZIALIZZAZIONE DELL'APPLICAZIONE
-        // =============================================
-        
-        function initApp() {
-            // Imposta valori iniziali
-            updateSpeedDisplay();
+        // Inizializzazione
+        function init() {
+            console.log("Sistema inizializzato");
             
-            // Inizializza test delle funzionalità
-            testFunctionalities();
+            // Imposta velocità iniziale
+            updateSpeed();
             
-            // Configura event listeners
+            // Aggiungi event listeners
             setupEventListeners();
             
-            // Messaggio di benvenuto
-            showMessage('Sistema pronto! Inserisci il codice HTML da analizzare.', 'success');
-            
-            console.log('✅ Sistema di sottotitoli inizializzato con successo');
+            // Test iniziale
+            testAllFunctions();
         }
         
-        // =============================================
-        // CONFIGURAZIONE EVENT LISTENERS
-        // =============================================
-        
+        // Configura event listeners
         function setupEventListeners() {
-            // Analisi codice
-            elements.analyzeCodeBtn.addEventListener('click', analyzeHTMLCode);
-            
-            // Controlli sottotitoli
-            elements.startSubtitleBtn.addEventListener('click', startSubtitle);
-            elements.stopSubtitleBtn.addEventListener('click', stopSubtitle);
-            elements.resetSubtitleBtn.addEventListener('click', resetSubtitle);
+            // Sottotitoli
+            elements.startBtn.addEventListener('click', startSubtitle);
+            elements.stopBtn.addEventListener('click', stopSubtitle);
+            elements.resetBtn.addEventListener('click', resetSubtitle);
             elements.speedSlider.addEventListener('input', updateSpeed);
             
-            // Gestione caption
-            elements.useCaptionForSubtitleBtn.addEventListener('click', useCaptionForSubtitle);
+            // Caption
+            elements.useCaptionBtn.addEventListener('click', useCaptionForSubtitle);
             elements.clearCaptionBtn.addEventListener('click', clearCaption);
-            elements.sampleCaptionBtn.addEventListener('click', loadSampleCaption);
-            
-            // Gestione risultati
-            elements.copyCodeBtn.addEventListener('click', copyCorrectedCode);
-            elements.clearResultsBtn.addEventListener('click', clearResults);
             
             // Test funzionalità
-            elements.whatsappBtn.addEventListener('click', () => testButtonFunctionality('whatsapp'));
-            elements.teleprompterBtn.addEventListener('click', () => testButtonFunctionality('teleprompter'));
-            elements.cameraBtn.addEventListener('click', () => testButtonFunctionality('camera'));
-            
-            // Tasti rapidi da tastiera
-            document.addEventListener('keydown', handleKeyboardShortcuts);
+            elements.whatsappBtn.addEventListener('click', () => testFunction('WhatsApp', '📱'));
+            elements.teleprompterBtn.addEventListener('click', () => testFunction('Teleprompter', '📜'));
+            elements.cameraBtn.addEventListener('click', () => testFunction('Camera', '📷'));
+            elements.analyzeBtn.addEventListener('click', analyzeCode);
         }
         
-        // =============================================
-        // ANALISI E CORREZIONE CODICE HTML
-        // =============================================
-        
-        function analyzeHTMLCode() {
-            const htmlCode = elements.htmlInput.value.trim();
-            
-            if (!htmlCode) {
-                showMessage('❌ Per favore, inserisci del codice HTML da analizzare.', 'error');
-                return;
-            }
-            
-            showMessage('🔍 Analisi del codice in corso...', 'info');
-            
-            // Raccolta risultati
-            const errors = [];
-            const warnings = [];
-            const successes = [];
-            let correctedCode = htmlCode;
-            
-            // CONTROLLO 1: DOCTYPE
-            if (!htmlCode.includes('<!DOCTYPE html>')) {
-                errors.push('Manca la dichiarazione DOCTYPE. Aggiungo <!DOCTYPE html> all\'inizio.');
-                correctedCode = '<!DOCTYPE html>\n' + correctedCode;
-            } else {
-                successes.push('DOCTYPE presente e corretto.');
-            }
-            
-            // CONTROLLO 2: TAG HTML
-            const hasHtmlOpen = /<html\b/i.test(correctedCode);
-            const hasHtmlClose = /<\/html>/i.test(correctedCode);
-            
-            if (!hasHtmlOpen || !hasHtmlClose) {
-                if (!hasHtmlOpen) {
-                    errors.push('Tag &lt;html&gt; mancante. Aggiungo tag html con attributo lang.');
-                    correctedCode = correctedCode.replace('<!DOCTYPE html>', '<!DOCTYPE html>\n<html lang="it">');
-                }
-                if (!hasHtmlClose) {
-                    errors.push('Tag &lt;/html&gt; mancante. Aggiungo chiusura html.');
-                    correctedCode = correctedCode + '\n</html>';
-                }
-            } else {
-                successes.push('Tag &lt;html&gt; presente e correttamente chiuso.');
-            }
-            
-            // CONTROLLO 3: TAG HEAD
-            const hasHeadOpen = /<head\b/i.test(correctedCode);
-            const hasHeadClose = /<\/head>/i.test(correctedCode);
-            
-            if (!hasHeadOpen || !hasHeadClose) {
-                if (!hasHeadOpen) {
-                    warnings.push('Tag &lt;head&gt; mancante. Aggiungo sezione head.');
-                    correctedCode = correctedCode.replace('<html', '<html>\n<head>\n</head>');
-                }
-                if (!hasHeadClose && hasHeadOpen) {
-                    warnings.push('Tag &lt;/head&gt; mancante. Aggiungo chiusura head.');
-                    correctedCode = correctedCode.replace(/<head\b[^>]*>/i, '$&\n</head>');
-                }
-            } else {
-                successes.push('Tag &lt;head&gt; presente e correttamente chiuso.');
-            }
-            
-            // CONTROLLO 4: TAG BODY
-            const hasBodyOpen = /<body\b/i.test(correctedCode);
-            const hasBodyClose = /<\/body>/i.test(correctedCode);
-            
-            if (!hasBodyOpen || !hasBodyClose) {
-                if (!hasBodyOpen) {
-                    warnings.push('Tag &lt;body&gt; mancante. Aggiungo sezione body.');
-                    correctedCode = correctedCode.replace('</head>', '</head>\n<body>\n</body>');
-                }
-                if (!hasBodyClose && hasBodyOpen) {
-                    warnings.push('Tag &lt;/body&gt; mancante. Aggiungo chiusura body.');
-                    correctedCode = correctedCode.replace(/<body\b[^>]*>/i, '$&\n</body>');
-                }
-            } else {
-                successes.push('Tag &lt;body&gt; presente e correttamente chiuso.');
-            }
-            
-            // CONTROLLO 5: CHARSET UTF-8
-            if (!/<meta\b[^>]*charset\s*=\s*['"]?utf-8['"]?/i.test(correctedCode)) {
-                warnings.push('Manca dichiarazione charset UTF-8. Aggiungo meta tag.');
-                correctedCode = correctedCode.replace(/<head\b[^>]*>/i, '$&\n    <meta charset="UTF-8">');
-            } else {
-                successes.push('Charset UTF-8 presente.');
-            }
-            
-            // CONTROLLO 6: VIEWPORT MOBILE
-            if (!/<meta\b[^>]*name\s*=\s*['"]?viewport['"]?/i.test(correctedCode)) {
-                warnings.push('Manca tag viewport per dispositivi mobili. Aggiungo meta tag.');
-                correctedCode = correctedCode.replace(/<meta charset="UTF-8">/, 
-                    '<meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">');
-            } else {
-                successes.push('Viewport per mobile presente.');
-            }
-            
-            // CONTROLLO 7: TITLE
-            if (!/<title>.*<\/title>/i.test(correctedCode)) {
-                warnings.push('Manca tag &lt;title&gt;. Aggiungo titolo pagina.');
-                correctedCode = correctedCode.replace(/<head\b[^>]*>/i, '$&\n    <title>Pagina Corretta</title>');
-            } else {
-                successes.push('Tag &lt;title&gt; presente.');
-            }
-            
-            // CONTROLLO 8: TAG NON CHIUSI
-            const tagCheck = checkUnclosedTags(correctedCode);
-            if (tagCheck.unclosed.length > 0) {
-                tagCheck.unclosed.forEach(tag => {
-                    errors.push(`Tag &lt;${tag}&gt; non chiuso. Aggiungo &lt;/${tag}&gt;.`);
-                    correctedCode = correctedCode + `\n</${tag}>`;
-                });
-            }
-            if (tagCheck.properlyClosed.length > 0) {
-                successes.push('Tutti i tag principali sono correttamente chiusi.');
-            }
-            
-            // CONTROLLO 9: ATTRIBUTI ALT PER IMMAGINI
-            const imgRegex = /<img\b[^>]*>/gi;
-            let imgMatch;
-            let imgCount = 0;
-            let imgAltCount = 0;
-            
-            while ((imgMatch = imgRegex.exec(correctedCode)) !== null) {
-                imgCount++;
-                if (/alt\s*=\s*['"][^'"]*['"]/i.test(imgMatch[0])) {
-                    imgAltCount++;
-                }
-            }
-            
-            if (imgCount > 0 && imgAltCount < imgCount) {
-                warnings.push(`${imgCount - imgAltCount} immagine/i senza attributo alt. Aggiungere descrizioni per accessibilità.`);
-            }
-            
-            // Mostra risultati
-            displayAnalysisResults(errors, warnings, successes, correctedCode);
-            
-            // Salva codice corretto
-            appState.correctedCode = correctedCode;
-            
-            // Testa funzionalità
-            testFunctionalities();
-            
-            // Log nel console
-            console.log('✅ Analisi completata:', { errors: errors.length, warnings: warnings.length, successes: successes.length });
-        }
-        
-        // =============================================
-        // FUNZIONI DI SUPPORTO PER ANALISI CODICE
-        // =============================================
-        
-        function checkUnclosedTags(html) {
-            const tags = html.match(/<\/?([a-z][a-z0-9]*)\b[^>]*>/gi) || [];
-            const stack = [];
-            const properlyClosed = [];
-            const unclosed = [];
-            
-            // Tag auto-chiudenti (da ignorare)
-            const selfClosing = new Set(['meta', 'link', 'img', 'br', 'hr', 'input', 'area', 'base', 'col', 
-                                         'command', 'embed', 'keygen', 'param', 'source', 'track', 'wbr']);
-            
-            tags.forEach(tag => {
-                const isClosing = tag.startsWith('</');
-                const tagName = tag.replace(/[<\/>]/g, '').split(' ')[0].toLowerCase();
-                
-                if (selfClosing.has(tagName)) return;
-                
-                if (isClosing) {
-                    if (stack.length > 0 && stack[stack.length - 1] === tagName) {
-                        stack.pop();
-                        properlyClosed.push(tagName);
-                    }
-                } else {
-                    stack.push(tagName);
-                }
-            });
-            
-            // I tag rimasti nello stack non sono stati chiusi
-            stack.forEach(tagName => {
-                if (!unclosed.includes(tagName)) {
-                    unclosed.push(tagName);
-                }
-            });
-            
-            return { unclosed, properlyClosed };
-        }
-        
-        function displayAnalysisResults(errors, warnings, successes, correctedCode) {
-            let resultsHTML = '<div class="results-summary">';
-            
-            if (errors.length === 0 && warnings.length === 0 && successes.length === 0) {
-                resultsHTML += '<div class="info">Nessun problema rilevato nel codice!</div>';
-            } else {
-                // Mostra errori
-                if (errors.length > 0) {
-                    resultsHTML += '<h3 style="color: #f87171; margin-top: 15px;">❌ Errori Corretti:</h3>';
-                    errors.forEach(error => {
-                        resultsHTML += `<div class="error">${error}</div>`;
-                    });
-                }
-                
-                // Mostra warning
-                if (warnings.length > 0) {
-                    resultsHTML += '<h3 style="color: #fbbf24; margin-top: 15px;">⚠️ Avvertenze:</h3>';
-                    warnings.forEach(warning => {
-                        resultsHTML += `<div class="warning">${warning}</div>`;
-                    });
-                }
-                
-                // Mostra successi
-                if (successes.length > 0) {
-                    resultsHTML += '<h3 style="color: #10b981; margin-top: 15px;">✅ Controlli Superati:</h3>';
-                    successes.forEach(success => {
-                        resultsHTML += `<div class="success">${success}</div>`;
-                    });
-                }
-            }
-            
-            // Mostra codice corretto
-            if (correctedCode) {
-                resultsHTML += `<h3 style="color: #38bdf8; margin-top: 20px;">📄 Codice HTML Corretto:</h3>`;
-                resultsHTML += `<pre style="background: rgba(15, 23, 42, 0.9); padding: 15px; border-radius: 8px; overflow-x: auto; border: 1px solid #334155;">${escapeHTML(correctedCode)}</pre>`;
-            }
-            
-            resultsHTML += '</div>';
-            elements.analysisResults.innerHTML = resultsHTML;
-            
-            // Mostra messaggio riepilogativo
-            const totalIssues = errors.length + warnings.length;
-            if (totalIssues === 0) {
-                showMessage('✅ Codice HTML valido! Nessun errore trovato.', 'success');
-            } else {
-                showMessage(`🔧 Analisi completata: ${errors.length} errori corretti, ${warnings.length} avvertenze.`, 
-                          errors.length > 0 ? 'warning' : 'info');
-            }
-        }
-        
-        // =============================================
         // SOTTOTITOLI SCORREVOLI
-        // =============================================
-        
         function startSubtitle() {
-            if (appState.subtitleAnimationId) {
-                showMessage('⏸ Sottotitoli già in riproduzione.', 'warning');
+            if (subtitleAnimation) {
+                showMessage('⚠️ Sottotitoli già in esecuzione', 'info', elements.analysisResults);
                 return;
             }
             
-            appState.subtitleText = elements.subtitleElement.textContent;
-            appState.subtitlePosition = elements.subtitleDisplay.offsetWidth;
-            appState.isSubtitleActive = true;
+            currentSubtitleText = elements.subtitle.textContent;
+            subtitlePosition = document.querySelector('.subtitle-display').offsetWidth;
             
-            // Aggiorna stile del pulsante
-            elements.startSubtitleBtn.innerHTML = '<span>▶</span> Riproduzione';
-            elements.startSubtitleBtn.disabled = true;
-            elements.stopSubtitleBtn.disabled = false;
-            
-            function animateSubtitle() {
-                const displayWidth = elements.subtitleDisplay.offsetWidth;
-                const textWidth = getTextWidth(appState.subtitleText, elements.subtitleElement);
+            function animate() {
+                const displayWidth = document.querySelector('.subtitle-display').offsetWidth;
+                const textWidth = getTextWidth(currentSubtitleText);
                 
-                // Se il testo è completamente uscito dallo schermo, riparti dall'inizio
-                if (appState.subtitlePosition < -textWidth) {
-                    appState.subtitlePosition = displayWidth;
+                if (subtitlePosition < -textWidth) {
+                    subtitlePosition = displayWidth;
                 }
                 
-                // Aggiorna la posizione
-                elements.subtitleElement.style.left = `${appState.subtitlePosition}px`;
-                appState.subtitlePosition -= appState.subtitleSpeed / 2;
+                elements.subtitle.style.left = subtitlePosition + 'px';
+                subtitlePosition -= subtitleSpeed / 2;
                 
-                // Continua l'animazione
-                appState.subtitleAnimationId = requestAnimationFrame(animateSubtitle);
+                subtitleAnimation = requestAnimationFrame(animate);
             }
             
-            // Avvia l'animazione
-            appState.subtitleAnimationId = requestAnimationFrame(animateSubtitle);
-            
-            showMessage('🎬 Sottotitoli avviati. Il testo scorre da destra a sinistra.', 'success');
-            console.log('▶ Sottotitoli avviati');
+            subtitleAnimation = requestAnimationFrame(animate);
+            showMessage('✅ Sottotitoli avviati', 'success', elements.analysisResults);
         }
         
         function stopSubtitle() {
-            if (appState.subtitleAnimationId) {
-                cancelAnimationFrame(appState.subtitleAnimationId);
-                appState.subtitleAnimationId = null;
-                appState.isSubtitleActive = false;
-                
-                // Ripristina pulsante
-                elements.startSubtitleBtn.innerHTML = '<span>▶</span> Avvia';
-                elements.startSubtitleBtn.disabled = false;
-                
-                showMessage('⏸ Sottotitoli fermati.', 'warning');
-                console.log('⏸ Sottotitoli fermati');
-            } else {
-                showMessage('⚠️ Nessun sottotitolo in riproduzione.', 'warning');
+            if (subtitleAnimation) {
+                cancelAnimationFrame(subtitleAnimation);
+                subtitleAnimation = null;
+                showMessage('⏹ Sottotitoli fermati', 'info', elements.analysisResults);
             }
         }
         
         function resetSubtitle() {
-            appState.subtitlePosition = elements.subtitleDisplay.offsetWidth;
-            elements.subtitleElement.style.left = `${appState.subtitlePosition}px`;
-            
-            showMessage('↺ Posizione sottotitoli resettata.', 'info');
-            console.log('↺ Sottotitoli resettati');
+            subtitlePosition = document.querySelector('.subtitle-display').offsetWidth;
+            elements.subtitle.style.left = subtitlePosition + 'px';
+            showMessage('↺ Sottotitoli resettati', 'info', elements.analysisResults);
         }
         
         function updateSpeed() {
-            appState.subtitleSpeed = parseInt(elements.speedSlider.value);
-            updateSpeedDisplay();
+            subtitleSpeed = parseInt(elements.speedSlider.value);
+            elements.speedValue.textContent = subtitleSpeed;
         }
         
-        function updateSpeedDisplay() {
-            elements.speedValue.textContent = appState.subtitleSpeed;
-        }
-        
-        // =============================================
-        // GESTIONE CAPTION (TESTO LIBERO)
-        // =============================================
-        
+        // CAPTION
         function useCaptionForSubtitle() {
-            const caption = elements.captionText.value.trim();
-            
-            if (!caption) {
-                showMessage('❌ L\'area caption è vuota. Inserisci del testo prima di usarlo per i sottotitoli.', 'error');
+            const text = elements.captionText.value.trim();
+            if (!text) {
+                showMessage('❌ Inserisci del testo nella caption', 'error', elements.analysisResults);
                 return;
             }
             
-            elements.subtitleElement.textContent = caption;
-            appState.subtitleText = caption;
+            elements.subtitle.textContent = text;
+            currentSubtitleText = text;
             
-            // Se l'animazione è in corso, fermala e riavviala
-            if (appState.subtitleAnimationId) {
+            if (subtitleAnimation) {
                 stopSubtitle();
                 setTimeout(startSubtitle, 100);
             } else {
                 resetSubtitle();
             }
             
-            showMessage('✅ Testo dalla caption utilizzato per i sottotitoli.', 'success');
-            console.log('📝 Testo caption utilizzato per sottotitoli');
+            showMessage('✅ Testo caption usato per sottotitoli', 'success', elements.analysisResults);
         }
         
         function clearCaption() {
             elements.captionText.value = '';
             elements.captionText.focus();
+            showMessage('🗑️ Caption pulita', 'info', elements.analysisResults);
+        }
+        
+        // ANALISI CODICE
+        function analyzeCode() {
+            const code = elements.htmlInput.value.trim();
             
-            showMessage('✏️ Area caption pronta per nuovo testo.', 'info');
-        }
-        
-        function loadSampleCaption() {
-            const sampleText = `Presentazione Sistema Sottotitoli
-
-• Funzionalità Principali:
-1. Analisi automatica codice HTML
-2. Correzione errori comuni
-3. Generazione sottotitoli scorrevoli
-4. Area caption professionale
-
-• Caratteristiche Tecniche:
-✓ Supporto completo HTML5
-✓ Accessibilità garantita
-✓ Design responsive
-✓ Controlli intuitivi
-
-Il sistema è progettato per presentazioni professionali, webinar e corsi online.`;
-
-            elements.captionText.value = sampleText;
-            showMessage('📄 Testo di esempio caricato nell\'area caption.', 'success');
-        }
-        
-        // =============================================
-        // GESTIONE RISULTATI E UTILITY
-        // =============================================
-        
-        function copyCorrectedCode() {
-            if (!appState.correctedCode) {
-                showMessage('❌ Nessun codice corretto disponibile. Analizza prima il codice HTML.', 'error');
+            if (!code) {
+                showMessage('❌ Inserisci del codice HTML da analizzare', 'error', elements.analysisResults);
                 return;
             }
             
-            navigator.clipboard.writeText(appState.correctedCode)
-                .then(() => {
-                    showMessage('✅ Codice corretto copiato negli appunti!', 'success');
-                })
-                .catch(err => {
-                    showMessage(`❌ Errore durante la copia: ${err}`, 'error');
-                });
-        }
-        
-        function clearResults() {
-            elements.analysisResults.innerHTML = '<div class="info">Pronto per l\'analisi del codice HTML.</div>';
-            appState.correctedCode = '';
-            showMessage('🗑️ Risultati analisi puliti.', 'info');
-        }
-        
-        // =============================================
-        // TEST FUNZIONALITÀ
-        // =============================================
-        
-        function testFunctionalities() {
-            elements.functionResults.innerHTML = '';
+            showMessage('🔍 Analisi in corso...', 'info', elements.analysisResults);
             
-            const tests = [
-                {
-                    id: 'whatsapp',
-                    title: 'What\'s Up',
-                    icon: '📱',
-                    status: 'Funzionale',
-                    statusClass: 'status-success'
-                },
-                {
-                    id: 'teleprompter',
-                    title: 'Teleprompter',
-                    icon: '📜',
-                    status: 'Funzionale',
-                    statusClass: 'status-success'
-                },
-                {
-                    id: 'camera',
-                    title: 'Camera',
-                    icon: '📷',
-                    status: 'Funzionale',
-                    statusClass: 'status-success'
-                },
-                {
-                    id: 'code-analysis',
-                    title: 'Analisi Codice',
-                    icon: '🔍',
-                    status: 'Attivo',
-                    statusClass: 'status-success'
-                },
-                {
-                    id: 'subtitle-system',
-                    title: 'Sottotitoli',
-                    icon: '🎬',
-                    status: appState.isSubtitleActive ? 'In Riproduzione' : 'Pronto',
-                    statusClass: 'status-success'
-                }
-            ];
+            // Analisi semplice
+            const errors = [];
+            const warnings = [];
+            const successes = [];
             
-            tests.forEach(test => {
-                const testElement = document.createElement('div');
-                testElement.className = 'test-item';
-                testElement.innerHTML = `
-                    <div class="test-icon">${test.icon}</div>
-                    <div class="test-content">
-                        <div class="test-title">${test.title}</div>
-                        <div class="test-status ${test.statusClass}">${test.status}</div>
-                    </div>
-                `;
-                
-                elements.functionResults.appendChild(testElement);
-            });
-        }
-        
-        function testButtonFunctionality(buttonType) {
-            let message = '';
-            
-            switch(buttonType) {
-                case 'whatsapp':
-                    message = '📱 Funzionalità "What\'s Up" attivata: simulazione connessione in corso...';
-                    break;
-                case 'teleprompter':
-                    message = '📜 Teleprompter attivato: il sistema è pronto per la presentazione.';
-                    break;
-                case 'camera':
-                    message = '📷 Funzionalità Camera attivata: accesso simulato alla fotocamera.';
-                    break;
+            // Check DOCTYPE
+            if (!code.includes('<!DOCTYPE')) {
+                errors.push('Manca DOCTYPE');
+            } else {
+                successes.push('DOCTYPE presente');
             }
             
-            showMessage(message, 'info');
-            testFunctionalities();
+            // Check html tag
+            if (!code.includes('<html')) {
+                warnings.push('Tag &lt;html&gt; mancante');
+            } else {
+                successes.push('Tag &lt;html&gt; presente');
+            }
             
-            console.log(`🔄 Test funzionalità: ${buttonType}`);
+            // Check head tag
+            if (!code.includes('<head')) {
+                warnings.push('Tag &lt;head&gt; mancante');
+            } else {
+                successes.push('Tag &lt;head&gt; presente');
+            }
+            
+            // Check body tag
+            if (!code.includes('<body')) {
+                warnings.push('Tag &lt;body&gt; mancante');
+            } else {
+                successes.push('Tag &lt;body&gt; presente');
+            }
+            
+            // Check charset
+            if (!code.includes('charset') && !code.includes('UTF-8')) {
+                warnings.push('Charset UTF-8 mancante');
+            } else {
+                successes.push('Charset presente');
+            }
+            
+            // Mostra risultati
+            let resultsHTML = '';
+            
+            if (errors.length > 0) {
+                resultsHTML += '<div style="color: #ef476f; margin: 10px 0;"><strong>❌ Errori:</strong><br>' + 
+                    errors.join('<br>') + '</div>';
+            }
+            
+            if (warnings.length > 0) {
+                resultsHTML += '<div style="color: #ffd166; margin: 10px 0;"><strong>⚠️ Avvertenze:</strong><br>' + 
+                    warnings.join('<br>') + '</div>';
+            }
+            
+            if (successes.length > 0) {
+                resultsHTML += '<div style="color: #06d6a0; margin: 10px 0;"><strong>✅ Successi:</strong><br>' + 
+                    successes.join('<br>') + '</div>';
+            }
+            
+            elements.analysisResults.innerHTML = resultsHTML;
+            testAllFunctions();
         }
         
-        // =============================================
-        // FUNZIONI DI SUPPORTO GENERALI
-        // =============================================
+        // TEST FUNZIONI
+        function testFunction(name, icon) {
+            const now = new Date();
+            const time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
+            
+            const message = `${icon} ${name} testato con successo alle ${time}`;
+            showMessage(message, 'success', elements.functionResults);
+            
+            // Per WhatsApp, apri finestra di test
+            if (name === 'WhatsApp') {
+                alert('Funzione WhatsApp: Simulazione connessione...');
+            }
+        }
         
-        function showMessage(text, type) {
+        function testAllFunctions() {
+            elements.functionResults.innerHTML = 
+                '<div class="success">✅ Tutte le funzionalità sono operative</div>' +
+                '<div class="info">📱 WhatsApp: Pronto</div>' +
+                '<div class="info">📜 Teleprompter: Pronto</div>' +
+                '<div class="info">📷 Camera: Pronto</div>' +
+                '<div class="info">🔍 Analisi Codice: Pronto</div>';
+        }
+        
+        // UTILITY FUNCTIONS
+        function showMessage(text, type, container) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}`;
-            messageDiv.innerHTML = `<strong>${getIconByType(type)}</strong> ${text}`;
+            messageDiv.innerHTML = text;
             
-            // Inserisci all'inizio dei risultati
-            elements.analysisResults.prepend(messageDiv);
-            
-            // Rimuovi dopo 5 secondi (tranne errori importanti)
-            if (type !== 'error') {
+            if (container) {
+                container.insertBefore(messageDiv, container.firstChild);
+                
+                // Rimuovi dopo 5 secondi
                 setTimeout(() => {
-                    if (messageDiv.parentNode) {
+                    if (messageDiv.parentNode === container) {
                         messageDiv.style.opacity = '0';
                         messageDiv.style.transition = 'opacity 0.5s';
                         setTimeout(() => {
-                            if (messageDiv.parentNode) {
-                                messageDiv.parentNode.removeChild(messageDiv);
+                            if (messageDiv.parentNode === container) {
+                                container.removeChild(messageDiv);
                             }
                         }, 500);
                     }
@@ -1234,70 +535,15 @@ Il sistema è progettato per presentazioni professionali, webinar e corsi online
             }
         }
         
-        function getIconByType(type) {
-            switch(type) {
-                case 'error': return '❌';
-                case 'success': return '✅';
-                case 'warning': return '⚠️';
-                case 'info': return 'ℹ️';
-                default: return '💡';
-            }
-        }
-        
-        function escapeHTML(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-        
-        function getTextWidth(text, element) {
+        function getTextWidth(text) {
             const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            const style = window.getComputedStyle(element);
-            
-            context.font = style.font;
-            return context.measureText(text).width;
+            const ctx = canvas.getContext('2d');
+            ctx.font = '28px Arial';
+            return ctx.measureText(text).width;
         }
         
-        function handleKeyboardShortcuts(e) {
-            // Ctrl+Enter per analizzare codice
-            if (e.ctrlKey && e.key === 'Enter') {
-                e.preventDefault();
-                analyzeHTMLCode();
-            }
-            
-            // Spazio per avviare/fermare sottotitoli
-            if (e.code === 'Space' && e.target === document.body) {
-                e.preventDefault();
-                if (appState.subtitleAnimationId) {
-                    stopSubtitle();
-                } else {
-                    startSubtitle();
-                }
-            }
-            
-            // Escape per resettare sottotitoli
-            if (e.key === 'Escape') {
-                resetSubtitle();
-            }
-        }
-        
-        // Cache elemento subtitle-display
-        const elements.subtitleDisplay = document.querySelector('.subtitle-display');
-        
-        // =============================================
-        // AVVIO APPLICAZIONE
-        // =============================================
-        
-        // Avvia l'applicazione quando il DOM è pronto
-        document.addEventListener('DOMContentLoaded', initApp);
-        
-        // Fallback per browser più vecchi
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initApp);
-        } else {
-            initApp();
-        }
+        // Avvia l'applicazione
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>

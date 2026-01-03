@@ -1,0 +1,28 @@
+function startSubtitle() {
+    if (subtitleAnimationId) {
+        return; // Già in esecuzione
+    }
+    
+    subtitleText = subtitleElement.textContent;
+    subtitlePosition = 0;
+    
+    function animateSubtitle() {
+        // Calcola la larghezza del testo
+        const textWidth = getTextWidth(subtitleText, subtitleElement);
+        
+        // Se il testo è completamente uscito dallo schermo, riparti dall'inizio
+        if (subtitlePosition < -textWidth) {
+            subtitlePosition = document.querySelector('.subtitle-display').offsetWidth;
+        }
+        
+        // Aggiorna la posizione
+        subtitleElement.style.left = `${subtitlePosition}px`;
+        subtitlePosition -= subtitleSpeed / 2;
+        
+        // Continua l'animazione
+        subtitleAnimationId = requestAnimationFrame(animateSubtitle);
+    }
+    
+    // Avvia l'animazione
+    subtitleAnimationId = requestAnimationFrame(animateSubtitle);
+}

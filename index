@@ -1,549 +1,194 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Sottotitoli</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-        
-        body {
-            background: #1a1a2e;
-            color: #fff;
-            padding: 20px;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #16213e;
-            border-radius: 10px;
-        }
-        
-        h1 {
-            color: #4cc9f0;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle-display {
-            width: 100%;
-            height: 100px;
-            background: #0f3460;
-            border-radius: 10px;
-            margin: 30px 0;
-            overflow: hidden;
-            position: relative;
-            border: 2px solid #4cc9f0;
-        }
-        
-        #subtitle {
-            position: absolute;
-            white-space: nowrap;
-            font-size: 28px;
-            font-weight: bold;
-            color: #fff;
-            top: 50%;
-            transform: translateY(-50%);
-            left: 100%;
-            padding: 10px 0;
-            text-shadow: 0 0 10px rgba(76, 201, 240, 0.8);
-        }
-        
-        .controls {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-        
-        button {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 5px;
-            background: #4361ee;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-            min-width: 150px;
-        }
-        
-        button:hover {
-            background: #3a56d4;
-            transform: translateY(-2px);
-        }
-        
-        button#startSubtitle {
-            background: #06d6a0;
-        }
-        
-        button#stopSubtitle {
-            background: #ef476f;
-        }
-        
-        button#resetSubtitle {
-            background: #ffd166;
-            color: #333;
-        }
-        
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-        }
-        
-        .panel {
-            background: #16213e;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #0f3460;
-        }
-        
-        h2 {
-            color: #4cc9f0;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #0f3460;
-        }
-        
-        textarea {
-            width: 100%;
-            min-height: 250px;
-            background: #0f3460;
-            color: #fff;
-            border: 1px solid #4cc9f0;
-            border-radius: 5px;
-            padding: 15px;
-            font-size: 14px;
-            font-family: monospace;
-            margin-bottom: 15px;
-            resize: vertical;
-        }
-        
-        .caption-area {
-            min-height: 150px;
-            font-family: Arial, sans-serif;
-            font-size: 16px;
-        }
-        
-        .code-output {
-            background: #0f3460;
-            padding: 15px;
-            border-radius: 5px;
-            max-height: 300px;
-            overflow-y: auto;
-            border: 1px solid #4cc9f0;
-        }
-        
-        .message {
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-        
-        .success {
-            background: rgba(6, 214, 160, 0.2);
-            border-left: 4px solid #06d6a0;
-            color: #06d6a0;
-        }
-        
-        .error {
-            background: rgba(239, 71, 111, 0.2);
-            border-left: 4px solid #ef476f;
-            color: #ef476f;
-        }
-        
-        .info {
-            background: rgba(76, 201, 240, 0.2);
-            border-left: 4px solid #4cc9f0;
-            color: #4cc9f0;
-        }
-        
-        .speed-control {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-            justify-content: center;
-        }
-        
-        .speed-control input {
-            width: 200px;
-        }
-        
-        .test-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .test-buttons button {
-            min-width: 120px;
-            padding: 10px;
-            font-size: 14px;
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            background: #16213e;
-            border-radius: 10px;
-            color: #4cc9f0;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sistema Sottotitoli + Teleprompter</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>🎬 Sistema Sottotitoli Scorrevoli</h1>
-            <p>Analisi codice HTML + Sottotitoli scorrevoli orizzontali</p>
-        </header>
-        
-        <div class="subtitle-display">
-            <div id="subtitle">Sistema attivo - Inserisci testo nella sezione caption</div>
+  <div class="container" id="appRoot">
+    <header class="app-header">
+      <h1>🎬 Sistema di Sottotitoli & Teleprompter</h1>
+      <p class="subtitle">Analisi HTML + sottotitoli scorrevoli + teleprompter professionale (OBS-ready)</p>
+      <div class="status-line">
+        <span class="status-indicator status-active"></span>
+        <span>Sistema attivo e pronto all’uso</span>
+      </div>
+
+      <div class="top-modebar">
+        <button class="secondary" id="modeStudio">🧩 Studio</button>
+        <button class="secondary" id="modeTeleprompter">📜 Solo Teleprompter</button>
+        <button class="secondary" id="modeSubtitles">🎥 Solo Sottotitoli</button>
+
+        <label class="toggle">
+          <input type="checkbox" id="obsGreen" />
+          <span>🟩 Green screen (OBS)</span>
+        </label>
+
+        <label class="toggle">
+          <input type="checkbox" id="obsTransparent" />
+          <span>🫥 Trasparenza (browser source)</span>
+        </label>
+      </div>
+    </header>
+
+    <!-- SOTTOTITOLI -->
+    <section class="block" id="subtitlesBlock">
+      <h2>🎥 Sottotitoli Scorrevoli</h2>
+
+      <div class="subtitle-display" id="subtitleDisplay">
+        <div id="subtitle" class="subtitle-text">
+          Sistema di sottotitoli scorrevoli attivo. Usa la caption o scrivi il tuo testo.
         </div>
-        
-        <div class="controls">
-            <button id="startSubtitle">▶ Avvia Sottotitoli</button>
-            <button id="stopSubtitle">⏹ Ferma</button>
-            <button id="resetSubtitle">↺ Reset</button>
-            <div class="speed-control">
-                <span>Velocità:</span>
-                <input type="range" id="speed" min="1" max="20" value="10">
-                <span id="speedValue">10</span>
-            </div>
+      </div>
+
+      <div class="controls">
+        <button class="success" id="startSubtitle"><span>▶</span> Avvia</button>
+        <button class="warning" id="stopSubtitle"><span>⏸</span> Pausa</button>
+        <button class="secondary" id="resetSubtitle"><span>↺</span> Reset</button>
+
+        <div class="control-group">
+          <label for="subtitleSpeed">Velocità</label>
+          <input type="range" id="subtitleSpeed" min="1" max="30" value="10" />
+          <div class="pill" id="subtitleSpeedValue">10</div>
         </div>
-        
-        <div class="main-content">
-            <div class="panel">
-                <h2>📝 Area Caption (Testo libero)</h2>
-                <textarea id="captionText" class="caption-area" placeholder="Scrivi qui il testo per i sottotitoli scorrevoli...">Benvenuti nel sistema di sottotitoli professionale. Questo testo scorrerà orizzontalmente sullo schermo. Puoi modificare questo contenuto e utilizzarlo per presentazioni, webinar o eventi dal vivo.</textarea>
-                <div class="test-buttons">
-                    <button id="useCaptionForSubtitle" style="background: #06d6a0;">Usa per Sottotitoli</button>
-                    <button id="clearCaption" style="background: #ffd166; color: #333;">Pulisci</button>
-                </div>
-            </div>
-            
-            <div class="panel">
-                <h2>⚙️ Controlli Test</h2>
-                <div class="test-buttons">
-                    <button id="whatsappBtn" style="background: #25D366;">WhatsApp</button>
-                    <button id="teleprompterBtn" style="background: #8B5CF6;">Teleprompter</button>
-                    <button id="cameraBtn" style="background: #EF476F;">Camera</button>
-                    <button id="analyzeCode" style="background: #4361ee;">Analizza Codice</button>
-                </div>
-                <div id="functionResults" class="code-output" style="margin-top: 15px;">
-                    <div class="info">Premi i pulsanti per testare le funzionalità</div>
-                </div>
-            </div>
+
+        <div class="control-group">
+          <label for="subtitleFont">Font</label>
+          <input type="range" id="subtitleFont" min="18" max="72" value="36" />
+          <div class="pill" id="subtitleFontValue">36px</div>
         </div>
-        
-        <div class="panel">
-            <h2>🔍 Analisi Codice HTML</h2>
-            <textarea id="htmlInput" placeholder="Incolla qui il tuo codice HTML da analizzare..."><!DOCTYPE html>
-<html>
-<head>
-    <title>Test Page</title>
-</head>
-<body>
-    <h1>Pagina di Test</h1>
-    <p>Esempio di codice HTML da analizzare</p>
-    <button>Cliccami</button>
-</body>
-</html></textarea>
-            <div id="analysisResults" class="code-output">
-                <div class="info">Incolla il codice HTML e premi "Analizza Codice"</div>
-            </div>
+      </div>
+    </section>
+
+    <div class="grid" id="studioGrid">
+      <!-- ANALISI HTML -->
+      <section class="panel">
+        <h2>🔍 Analisi Codice HTML</h2>
+
+        <div class="instructions">
+          <h3>📋 Come funziona</h3>
+          <ul>
+            <li>Incolla il tuo HTML</li>
+            <li>Premi “Analizza”</li>
+            <li>Il sistema segnala e corregge problemi comuni</li>
+            <li>Puoi copiare il codice corretto</li>
+          </ul>
         </div>
-        
-        <footer>
-            <p>Sistema di Sottotitoli Scorrevoli | Tutte le funzionalità testate</p>
-        </footer>
+
+        <textarea id="htmlInput" class="code-input" spellcheck="false" placeholder="Incolla qui il tuo HTML..."></textarea>
+
+        <div class="button-row">
+          <button class="success" id="analyzeCode"><span>🔍</span> Analizza</button>
+          <button class="secondary" id="whatsappBtn"><span>📱</span> What's Up</button>
+          <button class="secondary" id="teleprompterBtn"><span>📜</span> Teleprompter</button>
+          <button class="secondary" id="cameraBtn"><span>📷</span> Camera</button>
+        </div>
+
+        <div class="results-container">
+          <h3>🧪 Test Funzionalità</h3>
+          <div id="functionResults" class="functionality-test"></div>
+        </div>
+      </section>
+
+      <!-- RISULTATI + CODICE -->
+      <section class="panel">
+        <h2>✅ Risultati & Codice</h2>
+
+        <div id="analysisResults" class="code-output">
+          <div class="message info">
+            <strong>ℹ️</strong> Pronto: incolla HTML e premi “Analizza”.
+          </div>
+        </div>
+
+        <div class="button-row">
+          <button class="success" id="copyCode"><span>📋</span> Copia</button>
+          <button class="secondary" id="clearResults"><span>🗑️</span> Pulisci</button>
+        </div>
+
+        <div class="instructions">
+          <h3>⚠️ Cose che corregge</h3>
+          <ul>
+            <li>DOCTYPE</li>
+            <li>html/head/body mancanti</li>
+            <li>charset + viewport</li>
+            <li>title</li>
+            <li>warning immagini senza alt</li>
+          </ul>
+        </div>
+      </section>
     </div>
 
-    <script>
-        // Variabili globali
-        let subtitleAnimation = null;
-        let subtitlePosition = 0;
-        let subtitleSpeed = 10;
-        let currentSubtitleText = "";
-        
-        // Elementi DOM
-        const elements = {
-            subtitle: document.getElementById('subtitle'),
-            startBtn: document.getElementById('startSubtitle'),
-            stopBtn: document.getElementById('stopSubtitle'),
-            resetBtn: document.getElementById('resetSubtitle'),
-            captionText: document.getElementById('captionText'),
-            useCaptionBtn: document.getElementById('useCaptionForSubtitle'),
-            clearCaptionBtn: document.getElementById('clearCaption'),
-            speedSlider: document.getElementById('speed'),
-            speedValue: document.getElementById('speedValue'),
-            whatsappBtn: document.getElementById('whatsappBtn'),
-            teleprompterBtn: document.getElementById('teleprompterBtn'),
-            cameraBtn: document.getElementById('cameraBtn'),
-            analyzeBtn: document.getElementById('analyzeCode'),
-            htmlInput: document.getElementById('htmlInput'),
-            analysisResults: document.getElementById('analysisResults'),
-            functionResults: document.getElementById('functionResults')
-        };
-        
-        // Inizializzazione
-        function init() {
-            console.log("Sistema inizializzato");
-            
-            // Imposta velocità iniziale
-            updateSpeed();
-            
-            // Aggiungi event listeners
-            setupEventListeners();
-            
-            // Test iniziale
-            testAllFunctions();
-        }
-        
-        // Configura event listeners
-        function setupEventListeners() {
-            // Sottotitoli
-            elements.startBtn.addEventListener('click', startSubtitle);
-            elements.stopBtn.addEventListener('click', stopSubtitle);
-            elements.resetBtn.addEventListener('click', resetSubtitle);
-            elements.speedSlider.addEventListener('input', updateSpeed);
-            
-            // Caption
-            elements.useCaptionBtn.addEventListener('click', useCaptionForSubtitle);
-            elements.clearCaptionBtn.addEventListener('click', clearCaption);
-            
-            // Test funzionalità
-            elements.whatsappBtn.addEventListener('click', () => testFunction('WhatsApp', '📱'));
-            elements.teleprompterBtn.addEventListener('click', () => testFunction('Teleprompter', '📜'));
-            elements.cameraBtn.addEventListener('click', () => testFunction('Camera', '📷'));
-            elements.analyzeBtn.addEventListener('click', analyzeCode);
-        }
-        
-        // SOTTOTITOLI SCORREVOLI
-        function startSubtitle() {
-            if (subtitleAnimation) {
-                showMessage('⚠️ Sottotitoli già in esecuzione', 'info', elements.analysisResults);
-                return;
-            }
-            
-            currentSubtitleText = elements.subtitle.textContent;
-            subtitlePosition = document.querySelector('.subtitle-display').offsetWidth;
-            
-            function animate() {
-                const displayWidth = document.querySelector('.subtitle-display').offsetWidth;
-                const textWidth = getTextWidth(currentSubtitleText);
-                
-                if (subtitlePosition < -textWidth) {
-                    subtitlePosition = displayWidth;
-                }
-                
-                elements.subtitle.style.left = subtitlePosition + 'px';
-                subtitlePosition -= subtitleSpeed / 2;
-                
-                subtitleAnimation = requestAnimationFrame(animate);
-            }
-            
-            subtitleAnimation = requestAnimationFrame(animate);
-            showMessage('✅ Sottotitoli avviati', 'success', elements.analysisResults);
-        }
-        
-        function stopSubtitle() {
-            if (subtitleAnimation) {
-                cancelAnimationFrame(subtitleAnimation);
-                subtitleAnimation = null;
-                showMessage('⏹ Sottotitoli fermati', 'info', elements.analysisResults);
-            }
-        }
-        
-        function resetSubtitle() {
-            subtitlePosition = document.querySelector('.subtitle-display').offsetWidth;
-            elements.subtitle.style.left = subtitlePosition + 'px';
-            showMessage('↺ Sottotitoli resettati', 'info', elements.analysisResults);
-        }
-        
-        function updateSpeed() {
-            subtitleSpeed = parseInt(elements.speedSlider.value);
-            elements.speedValue.textContent = subtitleSpeed;
-        }
-        
-        // CAPTION
-        function useCaptionForSubtitle() {
-            const text = elements.captionText.value.trim();
-            if (!text) {
-                showMessage('❌ Inserisci del testo nella caption', 'error', elements.analysisResults);
-                return;
-            }
-            
-            elements.subtitle.textContent = text;
-            currentSubtitleText = text;
-            
-            if (subtitleAnimation) {
-                stopSubtitle();
-                setTimeout(startSubtitle, 100);
-            } else {
-                resetSubtitle();
-            }
-            
-            showMessage('✅ Testo caption usato per sottotitoli', 'success', elements.analysisResults);
-        }
-        
-        function clearCaption() {
-            elements.captionText.value = '';
-            elements.captionText.focus();
-            showMessage('🗑️ Caption pulita', 'info', elements.analysisResults);
-        }
-        
-        // ANALISI CODICE
-        function analyzeCode() {
-            const code = elements.htmlInput.value.trim();
-            
-            if (!code) {
-                showMessage('❌ Inserisci del codice HTML da analizzare', 'error', elements.analysisResults);
-                return;
-            }
-            
-            showMessage('🔍 Analisi in corso...', 'info', elements.analysisResults);
-            
-            // Analisi semplice
-            const errors = [];
-            const warnings = [];
-            const successes = [];
-            
-            // Check DOCTYPE
-            if (!code.includes('<!DOCTYPE')) {
-                errors.push('Manca DOCTYPE');
-            } else {
-                successes.push('DOCTYPE presente');
-            }
-            
-            // Check html tag
-            if (!code.includes('<html')) {
-                warnings.push('Tag &lt;html&gt; mancante');
-            } else {
-                successes.push('Tag &lt;html&gt; presente');
-            }
-            
-            // Check head tag
-            if (!code.includes('<head')) {
-                warnings.push('Tag &lt;head&gt; mancante');
-            } else {
-                successes.push('Tag &lt;head&gt; presente');
-            }
-            
-            // Check body tag
-            if (!code.includes('<body')) {
-                warnings.push('Tag &lt;body&gt; mancante');
-            } else {
-                successes.push('Tag &lt;body&gt; presente');
-            }
-            
-            // Check charset
-            if (!code.includes('charset') && !code.includes('UTF-8')) {
-                warnings.push('Charset UTF-8 mancante');
-            } else {
-                successes.push('Charset presente');
-            }
-            
-            // Mostra risultati
-            let resultsHTML = '';
-            
-            if (errors.length > 0) {
-                resultsHTML += '<div style="color: #ef476f; margin: 10px 0;"><strong>❌ Errori:</strong><br>' + 
-                    errors.join('<br>') + '</div>';
-            }
-            
-            if (warnings.length > 0) {
-                resultsHTML += '<div style="color: #ffd166; margin: 10px 0;"><strong>⚠️ Avvertenze:</strong><br>' + 
-                    warnings.join('<br>') + '</div>';
-            }
-            
-            if (successes.length > 0) {
-                resultsHTML += '<div style="color: #06d6a0; margin: 10px 0;"><strong>✅ Successi:</strong><br>' + 
-                    successes.join('<br>') + '</div>';
-            }
-            
-            elements.analysisResults.innerHTML = resultsHTML;
-            testAllFunctions();
-        }
-        
-        // TEST FUNZIONI
-        function testFunction(name, icon) {
-            const now = new Date();
-            const time = now.getHours() + ':' + now.getMinutes() + ':' + now.getSeconds();
-            
-            const message = `${icon} ${name} testato con successo alle ${time}`;
-            showMessage(message, 'success', elements.functionResults);
-            
-            // Per WhatsApp, apri finestra di test
-            if (name === 'WhatsApp') {
-                alert('Funzione WhatsApp: Simulazione connessione...');
-            }
-        }
-        
-        function testAllFunctions() {
-            elements.functionResults.innerHTML = 
-                '<div class="success">✅ Tutte le funzionalità sono operative</div>' +
-                '<div class="info">📱 WhatsApp: Pronto</div>' +
-                '<div class="info">📜 Teleprompter: Pronto</div>' +
-                '<div class="info">📷 Camera: Pronto</div>' +
-                '<div class="info">🔍 Analisi Codice: Pronto</div>';
-        }
-        
-        // UTILITY FUNCTIONS
-        function showMessage(text, type, container) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            messageDiv.innerHTML = text;
-            
-            if (container) {
-                container.insertBefore(messageDiv, container.firstChild);
-                
-                // Rimuovi dopo 5 secondi
-                setTimeout(() => {
-                    if (messageDiv.parentNode === container) {
-                        messageDiv.style.opacity = '0';
-                        messageDiv.style.transition = 'opacity 0.5s';
-                        setTimeout(() => {
-                            if (messageDiv.parentNode === container) {
-                                container.removeChild(messageDiv);
-                            }
-                        }, 500);
-                    }
-                }, 5000);
-            }
-        }
-        
-        function getTextWidth(text) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.font = '28px Arial';
-            return ctx.measureText(text).width;
-        }
-        
-        // Avvia l'applicazione
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+    <!-- CAPTION -->
+    <section class="block" id="captionBlock">
+      <h2>📝 Caption / Testo</h2>
+
+      <textarea id="captionText" class="caption-input" placeholder="Scrivi qui testo..."></textarea>
+
+      <div class="button-row">
+        <button class="success" id="useCaptionForSubtitle"><span>🎬</span> Usa per Sottotitoli</button>
+        <button class="success" id="useCaptionForTeleprompter"><span>📜</span> Usa per Teleprompter</button>
+        <button class="secondary" id="clearCaption"><span>✏️</span> Svuota</button>
+        <button class="secondary" id="sampleCaption"><span>📄</span> Esempio</button>
+      </div>
+    </section>
+
+    <!-- TELEPROMPTER -->
+    <section class="block" id="teleprompterBlock">
+      <h2>📜 Teleprompter</h2>
+
+      <div class="teleprompter-stage" id="teleStage">
+        <div class="safe-frame" aria-hidden="true"></div>
+        <div class="teleprompter-viewport" id="teleViewport">
+          <div class="teleprompter-content" id="teleContent"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="success" id="telePlay"><span>▶</span> Play</button>
+        <button class="warning" id="telePause"><span>⏸</span> Pausa</button>
+        <button class="secondary" id="teleReset"><span>↺</span> Reset</button>
+
+        <div class="control-group">
+          <label for="teleSpeed">Velocità</label>
+          <input type="range" id="teleSpeed" min="1" max="40" value="10" />
+          <div class="pill" id="teleSpeedValue">10</div>
+        </div>
+
+        <div class="control-group">
+          <label for="teleFont">Font</label>
+          <input type="range" id="teleFont" min="18" max="64" value="34" />
+          <div class="pill" id="teleFontValue">34px</div>
+        </div>
+
+        <div class="control-group">
+          <label for="teleLine">Interlinea</label>
+          <input type="range" id="teleLine" min="1.1" max="2.2" step="0.1" value="1.5" />
+          <div class="pill" id="teleLineValue">1.5</div>
+        </div>
+
+        <label class="toggle">
+          <input type="checkbox" id="teleMirror" />
+          <span>🪞 Mirror</span>
+        </label>
+
+        <label class="toggle">
+          <input type="checkbox" id="teleGuide" checked />
+          <span>🧷 Guide (safe area)</span>
+        </label>
+      </div>
+
+      <div class="hint">
+        Hotkeys: <kbd>Space</kbd> play/pausa • <kbd>R</kbd> reset • <kbd>↑</kbd>/<kbd>↓</kbd> velocità • <kbd>+</kbd>/<kbd>-</kbd> font • <kbd>M</kbd> mirror • <kbd>G</kbd> guide
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <div>🛠️ Sistema per sottotitoli e teleprompter (pulito + OBS-ready)</div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
 </body>
 </html>

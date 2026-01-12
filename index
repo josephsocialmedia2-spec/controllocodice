@@ -1,194 +1,204 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sistema Sottotitoli + Teleprompter</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Giornalino Immobili (PDF gratuito)</title>
+
+  <style>
+    /* PDF/Print */
+    @page { size: A4; margin: 12mm; }
+    @media print {
+      .toolbar { display: none !important; }
+      a { color: inherit; text-decoration: none; }
+    }
+
+    body { font-family: Arial, sans-serif; color: #111; margin: 0; background: #fff; }
+    .wrap { padding: 18px; }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: white;
+      padding: 12px 18px;
+      border-bottom: 1px solid #eee;
+      z-index: 10;
+    }
+    .toolbar .left { display: flex; gap: 10px; align-items: baseline; }
+    .toolbar .badge { font-size: 12px; opacity: .7; }
+
+    .btn {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px 12px;
+      background: #fff;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .cover { page-break-after: always; padding: 18px 0 8px; }
+    .cover h1 { margin: 0 0 6px; font-size: 28px; }
+    .cover p { margin: 0; font-size: 14px; opacity: .8; }
+
+    .section-title {
+      page-break-before: always;
+      margin: 0 0 10px;
+      padding: 8px 0;
+      font-size: 18px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    /* PIÙ IMMOBILI PER PAGINA: cambia 3 -> 4 se vuoi ancora più compatto */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .card {
+      border: 1px solid #e6e6e6;
+      border-radius: 12px;
+      overflow: hidden;
+      break-inside: avoid;
+    }
+
+    .img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      display: block;
+      background: #f3f3f3;
+    }
+
+    .meta { padding: 10px; }
+    .title { font-size: 13px; font-weight: 800; margin: 0 0 6px; line-height: 1.2; }
+    .price { font-size: 13px; margin: 0 0 6px; }
+    .facts { font-size: 11px; opacity: .85; display: flex; gap: 6px; flex-wrap: wrap; }
+    .facts span { border: 1px solid #eee; padding: 2px 6px; border-radius: 999px; }
+    .link { font-size: 11px; margin-top: 8px; }
+    .link a { border-bottom: 1px dotted #999; color: inherit; text-decoration: none; }
+  </style>
 </head>
+
 <body>
-  <div class="container" id="appRoot">
-    <header class="app-header">
-      <h1>🎬 Sistema di Sottotitoli & Teleprompter</h1>
-      <p class="subtitle">Analisi HTML + sottotitoli scorrevoli + teleprompter professionale (OBS-ready)</p>
-      <div class="status-line">
-        <span class="status-indicator status-active"></span>
-        <span>Sistema attivo e pronto all’uso</span>
-      </div>
-
-      <div class="top-modebar">
-        <button class="secondary" id="modeStudio">🧩 Studio</button>
-        <button class="secondary" id="modeTeleprompter">📜 Solo Teleprompter</button>
-        <button class="secondary" id="modeSubtitles">🎥 Solo Sottotitoli</button>
-
-        <label class="toggle">
-          <input type="checkbox" id="obsGreen" />
-          <span>🟩 Green screen (OBS)</span>
-        </label>
-
-        <label class="toggle">
-          <input type="checkbox" id="obsTransparent" />
-          <span>🫥 Trasparenza (browser source)</span>
-        </label>
-      </div>
-    </header>
-
-    <!-- SOTTOTITOLI -->
-    <section class="block" id="subtitlesBlock">
-      <h2>🎥 Sottotitoli Scorrevoli</h2>
-
-      <div class="subtitle-display" id="subtitleDisplay">
-        <div id="subtitle" class="subtitle-text">
-          Sistema di sottotitoli scorrevoli attivo. Usa la caption o scrivi il tuo testo.
-        </div>
-      </div>
-
-      <div class="controls">
-        <button class="success" id="startSubtitle"><span>▶</span> Avvia</button>
-        <button class="warning" id="stopSubtitle"><span>⏸</span> Pausa</button>
-        <button class="secondary" id="resetSubtitle"><span>↺</span> Reset</button>
-
-        <div class="control-group">
-          <label for="subtitleSpeed">Velocità</label>
-          <input type="range" id="subtitleSpeed" min="1" max="30" value="10" />
-          <div class="pill" id="subtitleSpeedValue">10</div>
-        </div>
-
-        <div class="control-group">
-          <label for="subtitleFont">Font</label>
-          <input type="range" id="subtitleFont" min="18" max="72" value="36" />
-          <div class="pill" id="subtitleFontValue">36px</div>
-        </div>
-      </div>
-    </section>
-
-    <div class="grid" id="studioGrid">
-      <!-- ANALISI HTML -->
-      <section class="panel">
-        <h2>🔍 Analisi Codice HTML</h2>
-
-        <div class="instructions">
-          <h3>📋 Come funziona</h3>
-          <ul>
-            <li>Incolla il tuo HTML</li>
-            <li>Premi “Analizza”</li>
-            <li>Il sistema segnala e corregge problemi comuni</li>
-            <li>Puoi copiare il codice corretto</li>
-          </ul>
-        </div>
-
-        <textarea id="htmlInput" class="code-input" spellcheck="false" placeholder="Incolla qui il tuo HTML..."></textarea>
-
-        <div class="button-row">
-          <button class="success" id="analyzeCode"><span>🔍</span> Analizza</button>
-          <button class="secondary" id="whatsappBtn"><span>📱</span> What's Up</button>
-          <button class="secondary" id="teleprompterBtn"><span>📜</span> Teleprompter</button>
-          <button class="secondary" id="cameraBtn"><span>📷</span> Camera</button>
-        </div>
-
-        <div class="results-container">
-          <h3>🧪 Test Funzionalità</h3>
-          <div id="functionResults" class="functionality-test"></div>
-        </div>
-      </section>
-
-      <!-- RISULTATI + CODICE -->
-      <section class="panel">
-        <h2>✅ Risultati & Codice</h2>
-
-        <div id="analysisResults" class="code-output">
-          <div class="message info">
-            <strong>ℹ️</strong> Pronto: incolla HTML e premi “Analizza”.
-          </div>
-        </div>
-
-        <div class="button-row">
-          <button class="success" id="copyCode"><span>📋</span> Copia</button>
-          <button class="secondary" id="clearResults"><span>🗑️</span> Pulisci</button>
-        </div>
-
-        <div class="instructions">
-          <h3>⚠️ Cose che corregge</h3>
-          <ul>
-            <li>DOCTYPE</li>
-            <li>html/head/body mancanti</li>
-            <li>charset + viewport</li>
-            <li>title</li>
-            <li>warning immagini senza alt</li>
-          </ul>
-        </div>
-      </section>
+  <div class="toolbar">
+    <div class="left">
+      <strong>Giornalino Immobili</strong>
+      <span class="badge" id="info">—</span>
     </div>
-
-    <!-- CAPTION -->
-    <section class="block" id="captionBlock">
-      <h2>📝 Caption / Testo</h2>
-
-      <textarea id="captionText" class="caption-input" placeholder="Scrivi qui testo..."></textarea>
-
-      <div class="button-row">
-        <button class="success" id="useCaptionForSubtitle"><span>🎬</span> Usa per Sottotitoli</button>
-        <button class="success" id="useCaptionForTeleprompter"><span>📜</span> Usa per Teleprompter</button>
-        <button class="secondary" id="clearCaption"><span>✏️</span> Svuota</button>
-        <button class="secondary" id="sampleCaption"><span>📄</span> Esempio</button>
-      </div>
-    </section>
-
-    <!-- TELEPROMPTER -->
-    <section class="block" id="teleprompterBlock">
-      <h2>📜 Teleprompter</h2>
-
-      <div class="teleprompter-stage" id="teleStage">
-        <div class="safe-frame" aria-hidden="true"></div>
-        <div class="teleprompter-viewport" id="teleViewport">
-          <div class="teleprompter-content" id="teleContent"></div>
-        </div>
-      </div>
-
-      <div class="controls">
-        <button class="success" id="telePlay"><span>▶</span> Play</button>
-        <button class="warning" id="telePause"><span>⏸</span> Pausa</button>
-        <button class="secondary" id="teleReset"><span>↺</span> Reset</button>
-
-        <div class="control-group">
-          <label for="teleSpeed">Velocità</label>
-          <input type="range" id="teleSpeed" min="1" max="40" value="10" />
-          <div class="pill" id="teleSpeedValue">10</div>
-        </div>
-
-        <div class="control-group">
-          <label for="teleFont">Font</label>
-          <input type="range" id="teleFont" min="18" max="64" value="34" />
-          <div class="pill" id="teleFontValue">34px</div>
-        </div>
-
-        <div class="control-group">
-          <label for="teleLine">Interlinea</label>
-          <input type="range" id="teleLine" min="1.1" max="2.2" step="0.1" value="1.5" />
-          <div class="pill" id="teleLineValue">1.5</div>
-        </div>
-
-        <label class="toggle">
-          <input type="checkbox" id="teleMirror" />
-          <span>🪞 Mirror</span>
-        </label>
-
-        <label class="toggle">
-          <input type="checkbox" id="teleGuide" checked />
-          <span>🧷 Guide (safe area)</span>
-        </label>
-      </div>
-
-      <div class="hint">
-        Hotkeys: <kbd>Space</kbd> play/pausa • <kbd>R</kbd> reset • <kbd>↑</kbd>/<kbd>↓</kbd> velocità • <kbd>+</kbd>/<kbd>-</kbd> font • <kbd>M</kbd> mirror • <kbd>G</kbd> guide
-      </div>
-    </section>
-
-    <footer class="app-footer">
-      <div>🛠️ Sistema per sottotitoli e teleprompter (pulito + OBS-ready)</div>
-    </footer>
+    <button class="btn" onclick="window.print()">Scarica PDF</button>
   </div>
 
-  <script src="app.js"></script>
+  <div class="wrap">
+    <div class="cover">
+      <h1>La Sacra Immobiliare</h1>
+      <p>Catalogo immobili – PDF gratuito + stampabile</p>
+      <p style="margin-top:6px; font-size:12px; opacity:.7">
+        Suggerimento: in stampa togli “Intestazioni e piè di pagina” e usa margini minimi.
+      </p>
+    </div>
+
+    <h2 class="section-title">IMMOBILI DISPONIBILI (ELENCO UNICO ORDINATO)</h2>
+    <div id="catalogo" class="grid"></div>
+
+    <div style="page-break-before: always; padding-top: 18px;">
+      <h2 style="margin:0 0 8px; font-size:18px;">Contatti</h2>
+      <p style="margin:0; font-size:13px; opacity:.85;">
+        Telefono / WhatsApp: ________ • Email: ________ • Sito: lasacraimmobiliare.it
+      </p>
+    </div>
+  </div>
+
+  <script>
+    /**
+     * ✅ QUI METTI I TUOI IMMOBILI.
+     * Ordinamento attuale:
+     * 1) Vendesi prima
+     * 2) Affittasi dopo
+     * 3) prezzo crescente (priceValue)
+     *
+     * Se vuoi prezzo decrescente: cambia "a.priceValue - b.priceValue" in "b.priceValue - a.priceValue"
+     */
+    const items = [
+      {
+        type: "Vendesi",
+        title: "Bilocale in centro",
+        priceLabel: "€ 145.000",
+        priceValue: 145000,
+        area: "65 mq",
+        rooms: "2 locali",
+        location: "Torino",
+        image: "https://via.placeholder.com/800x600",
+        url: "https://lasacraimmobiliare.it/products/..."
+      },
+      {
+        type: "Affittasi",
+        title: "Monolocale arredato",
+        priceLabel: "€ 600/mese",
+        priceValue: 600,
+        area: "35 mq",
+        rooms: "1 locale",
+        location: "Torino",
+        image: "https://via.placeholder.com/800x600",
+        url: "https://lasacraimmobiliare.it/products/..."
+      },
+      {
+        type: "Vendesi",
+        title: "Trilocale ristrutturato",
+        priceLabel: "€ 210.000",
+        priceValue: 210000,
+        area: "90 mq",
+        rooms: "3 locali",
+        location: "Torino",
+        image: "https://via.placeholder.com/800x600",
+        url: "https://lasacraimmobiliare.it/products/..."
+      }
+    ];
+
+    // Ordinamento: Vendesi -> Affittasi, poi prezzo crescente
+    items.sort((a, b) => {
+      if (a.type !== b.type) return a.type === "Vendesi" ? -1 : 1;
+      return (a.priceValue ?? 0) - (b.priceValue ?? 0);
+    });
+
+    function esc(s) {
+      return String(s ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function cardHTML(x) {
+      return `
+        <article class="card">
+          <img class="img" src="${esc(x.image)}" alt="">
+          <div class="meta">
+            <p class="title">${esc(x.title)}</p>
+            <p class="price">${esc(x.priceLabel)}</p>
+            <div class="facts">
+              <span>${esc(x.type)}</span>
+              ${x.area ? `<span>${esc(x.area)}</span>` : ""}
+              ${x.rooms ? `<span>${esc(x.rooms)}</span>` : ""}
+              ${x.location ? `<span>${esc(x.location)}</span>` : ""}
+            </div>
+            <div class="link"><a href="${esc(x.url)}">Scheda immobile</a></div>
+          </div>
+        </article>
+      `;
+    }
+
+    const grid = document.getElementById("catalogo");
+    grid.innerHTML = items.map(cardHTML).join("");
+
+    // info in alto
+    const info = document.getElementById("info");
+    info.textContent = `${items.length} immobili • ordine: Vendesi → Affittasi, prezzo crescente`;
+  </script>
 </body>
 </html>
